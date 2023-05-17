@@ -20,9 +20,12 @@ jobs:
                          --json "status,startedAt" \
                          --workflow slashdot-diygest-email.yml \
                          -t '{{range .}}{{tablerow .startedAt .status}}{{end}}' | wc -l)
+
          if [[ $SUCCESS_TODAY > 0 ]]; then
-           echo "Email already sent today terminating"
+           echo "Email already sent today, terminate workflow" >> "$GITHUB_STEP_SUMMARY""
            exit 1
+         else
+           echo "Email not sent today, continue workflow" >> "$GITHUB_STEP_SUMMARY""
          fi
 
       - name: Checkout code
