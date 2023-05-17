@@ -10,7 +10,7 @@ HTML_FILE="${FILE_NAME}.html"
 
 curl -s https://www.latestnigeriannews.com/latest/slashdot/0/latest-slashdot-news-headlines | pup '#slashdot a json{}' > "$JSON_FILE"
 
-cat <<JSON | mustache slashdot.diygest.mustache.html > "$HTML_FILE"
+cat <<JSON | mustache mustache/slashdot.diygest.mustache.html > "$HTML_FILE"
 {
 "prettydate": "${prettydate}",
 "exactdatetime": "${exactdatetime}",

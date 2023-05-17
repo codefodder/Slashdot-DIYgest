@@ -1,0 +1,49 @@
+name: Slashdot DIYgest Email
+
+on:
+  schedule:
+    - cron: "0,15 1 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  Slashdot-DIYgest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache Go deps
+        uses: gacts/setup-go-with-cache@v1
+        with:
+          go-version: 1.19
+          go-version-file: ''
+
+      - name: Install mustache-cli (golang dep)
+        run: go install github.com/cbroglie/mustache/cmd/mustache@latest
+
+      - name: Check runs
+        run: gh workflow list -a
+
+      - name: Scrape
+        run: |
+          bin/slashdot_scrape.sh
+          echo "HTMLFILE='$(ls *html)'" >> "$GITHUB_ENV"
+          echo "JSONFILE='$(ls *json)'" >> "$GITHUB_ENV"
+
+      - name: Email Slashdot DIYgest
+        id: sending_email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          subject: Slashdot DIYGest
+          from: Slashdot DIYgest
+          to: ${{secrets.GMAIL_USER}}
+          username: ${{secrets.GMAIL_USER}}
+          password: ${{secrets.GM_APPWRD}}
+          html_body: file://${{ env.HTMLFILE }}
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          ignore_cert: true
+          priority: high
+          attachments: ${{ env.JSONFILE }}
