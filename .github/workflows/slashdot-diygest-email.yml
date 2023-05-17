@@ -23,7 +23,15 @@ jobs:
         run: go install github.com/cbroglie/mustache/cmd/mustache@latest
 
       - name: Check runs
-        run: gh workflow list -a
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+         gh run list \
+         --created $(date +%Y-%m-%d) \
+         -s completed \
+         --json "status,startedAt" \
+         --workflow slashdot-diygest-email.yml \
+         -t '{{range .}}{{tablerow .startedAt .status}}{{end}}'
 
       - name: Scrape
         run: |
