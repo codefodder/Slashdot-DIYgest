@@ -26,7 +26,7 @@ jobs:
 
          if [[ $SUCCESS_TODAY > 0 ]]; then
            echo "## Email already sent today, skip workflow" >> "$GITHUB_STEP_SUMMARY"
-           echo "CANCEL_RUN=true" >> "$GITHUB_ENV""
+           echo "CANCEL_RUN=true" >> "$GITHUB_ENV"
          else
            echo "## Email not sent today, continue workflow" >> "$GITHUB_STEP_SUMMARY"
          fi
