@@ -10,6 +10,21 @@ jobs:
   Slashdot-DIYgest:
     runs-on: ubuntu-latest
     steps:
+      - name: "Quit when email already sent"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+         SUCCESS_TODAY=$(gh run list \
+                         --created $(TZ=Asia/Bangkok date +%Y-%m-%d) \
+                         -s success \
+                         --json "status,startedAt" \
+                         --workflow slashdot-diygest-email.yml \
+                         -t '{{range .}}{{tablerow .startedAt .status}}{{end}}' | wc -l)
+         if [[ $SUCCESS_TODAY > 0 ]]; then
+           echo "Email already sent today terminating"
+           exit 1
+         fi
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -23,17 +38,6 @@ jobs:
         run: |
           go install github.com/cbroglie/mustache/cmd/mustache@latest
           go install github.com/ericchiang/pup@latest
-
-      - name: Check runs
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-         gh run list \
-         --created $(date +%Y-%m-%d) \
-         -s success \
-         --json "status,startedAt" \
-         --workflow slashdot-diygest-email.yml \
-         -t '{{range .}}{{tablerow .startedAt .status}}{{end}}'
 
       - name: Scrape
         run: |
