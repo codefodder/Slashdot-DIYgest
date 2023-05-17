@@ -10,6 +10,9 @@ jobs:
   Slashdot-DIYgest:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: "Quit when email already sent"
         env:
           GH_TOKEN: ${{ github.token }}
@@ -27,9 +30,6 @@ jobs:
          else
            echo "Email not sent today, continue workflow" >> "$GITHUB_STEP_SUMMARY""
          fi
-
-      - name: Checkout code
-        uses: actions/checkout@v3
 
       - name: Cache Go deps
         uses: gacts/setup-go-with-cache@v1
