@@ -30,7 +30,7 @@ jobs:
         run: |
          gh run list \
          --created $(date +%Y-%m-%d) \
-         -s completed \
+         -s success \
          --json "status,startedAt" \
          --workflow slashdot-diygest-email.yml \
          -t '{{range .}}{{tablerow .startedAt .status}}{{end}}'
