@@ -31,14 +31,8 @@ jobs:
            echo "## Email not sent today, continue workflow" >> "$GITHUB_STEP_SUMMARY"
          fi
 
-      - name: Cancel workflow run
-        uses: potiuk/cancel-workflow-runs@master
-        if: ${{ env.CANCEL_RUN }}
-        with:
-          cancelMode: self
-          token: ${{ github.token }}
-
       - name: Cache Go deps
+        if: ${{ ! CANCEL_RUN  == 'true' }}
         uses: gacts/setup-go-with-cache@v1
         with:
           go-version: 1.19
