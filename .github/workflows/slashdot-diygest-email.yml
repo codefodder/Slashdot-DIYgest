@@ -38,13 +38,8 @@ jobs:
       - name: Scrape
         run: |
           bin/slashdot_scrape.sh
-          echo "HTMLFILE='$(ls *html)'" >> "$GITHUB_ENV"
-          echo "JSONFILE='$(ls *json)'" >> "$GITHUB_ENV"
-
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
+          echo "HTMLFILE=$(ls *html)" >> "$GITHUB_ENV"
+          echo "JSONFILE=$(ls *json)" >> "$GITHUB_ENV"
 
       - name: Email Slashdot DIYgest
         id: sending_email
