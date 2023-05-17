@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body style="font-family: 'Helvetica Neue', Helvetica, ‘Roboto’, sans-serif;">
+        <div>
+            <p>
+                <h1
+                    style="font-family: 'Helvetica Neue', Helvetica, ‘Roboto’, sans-serif;
+                           margin-top: 0.5em; margin-bottom: 0;
+                           font-weight: 900; font-size: 4em;
+                           line-height: 1; letter-spacing: -5px;">Slashdot DI<span style="letter-spacing:-12px">Y</span>gest</h1>
+                <p style="color: #0a0a0a; font-size: 13px; margin:0; padding:10px 0 0 20px;">Top 80 Stories of {{prettydate}}</p>
+                <p style="color: #0a0a0a; font-size: 11px; margin:0; padding:0 0 10px 20px;">Generated at {{exactdatetime}}</p>
+                {{#stories}}
+                <table border="0">
+                    <tr>
+                        <td style="color:#DDDDDD; width: 30px; text-align: right; font-size: 14pt">
+                            {{number}}
+                        </td>
+                        <td>
+                            <a href="{{link}}" style=
+                                     "color: #666666 ;font-weight:normal;text-align:left;line-height:1.4;text-decoration:none;font-size:16pt;Margin:0 0 3px;padding:0">
+                                {{title}}</a>
+                        </td>
+                    </tr>
+                </table>
+            </p>
+            {{/stories}}
+            <p style='font-size: 12px'><a style="color: #0a0a0a" href="https://github.com/codefodder/Slashdot-DIYgest">View the project</a> to set up your own <a style="color: #0a0a0a" href="https://github.com/codefodder/Slashdot-DIYgest">Slashdot DIYgest.</a></p>
+        </div>
+    </body>
+</html>
