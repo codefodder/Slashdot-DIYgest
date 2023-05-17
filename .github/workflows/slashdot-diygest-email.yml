@@ -32,23 +32,26 @@ jobs:
          fi
 
       - name: Cache Go deps
-        if: ${{ ! CANCEL_RUN  == 'true' }}
+        if: ${{ ! env.CANCEL_RUN  == 'true' }}
         uses: gacts/setup-go-with-cache@v1
         with:
           go-version: 1.19
 
       - name: Install Golang deps
+        if: ${{ ! env.CANCEL_RUN  == 'true' }}
         run: |
           go install github.com/cbroglie/mustache/cmd/mustache@latest
           go install github.com/ericchiang/pup@latest
 
       - name: Scrape
+        if: ${{ ! env.CANCEL_RUN  == 'true' }}
         run: |
           bin/slashdot_scrape.sh
           echo "HTMLFILE=$(ls *html)" >> "$GITHUB_ENV"
           echo "JSONFILE=$(ls *json)" >> "$GITHUB_ENV"
 
       - name: Email Slashdot DIYgest
+        if: ${{ ! env.CANCEL_RUN  == 'true' }}
         id: sending_email
         uses: dawidd6/action-send-mail@v3
         with:
