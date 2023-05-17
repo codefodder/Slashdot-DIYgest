@@ -2,7 +2,7 @@ name: Slashdot DIYgest Email
 
 on:
   schedule:
-    - cron: "0,15 1 * * *"
+    - cron: "0,5,10,15,20, 1 * * *"
 
   workflow_dispatch:
 
@@ -25,11 +25,18 @@ jobs:
                          -t '{{range .}}{{tablerow .startedAt .status}}{{end}}' | wc -l)
 
          if [[ $SUCCESS_TODAY > 0 ]]; then
-           echo "Email already sent today, terminate workflow" >> "$GITHUB_STEP_SUMMARY"
-           exit 1
+           echo "## Email already sent today, skip workflow" >> "$GITHUB_STEP_SUMMARY"
+           echo "CANCEL_RUN=true" >> "$GITHUB_ENV""
          else
-           echo "Email not sent today, continue workflow" >> "$GITHUB_STEP_SUMMARY"
+           echo "## Email not sent today, continue workflow" >> "$GITHUB_STEP_SUMMARY"
          fi
+
+      - name: Cancel workflow run
+        uses: potiuk/cancel-workflow-runs@master
+        if: ${{ env.CANCEL_RUN }}
+        with:
+          cancelMode: self
+          token: ${{ github.token }}
 
       - name: Cache Go deps
         uses: gacts/setup-go-with-cache@v1
