@@ -10,12 +10,11 @@ jobs:
   Slashdot-DIYgest:
     runs-on: ubuntu-latest
     steps:
-      - uses: technote-space/workflow-conclusion-action@v3
       - name: "Run when the email hasn't been sent today"
         run: |
-          GH_TOKEN='${{ github.token }}' \
-          GH_REPO=codefodder/slashdot-diygest \
-          \
+          GH_TOKEN='${{ github.token }}'
+          GH_REPO='codefodder/slashdot-diygest'
+          
           gh run list \
             --created $(date +%Y-%m-%d) \
             --json "startedAt,conclusion" \
@@ -23,10 +22,9 @@ jobs:
             --template '{{range .}}{{tablerow .startedAt .conclusion}}{{end}}' | tee output
 
           # if we don't have a success today, run.
-          if [[ ! "$(< output)" =~ "success" ]]; then
+          if [[ ! "$(< output)" =~ "success" ]]; then             
             echo "RUN=true" >> "$GITHUB_ENV"
-          else
-            echo "WORKFLOW_CONCLUSION='skipped'" >> "$GITHUB_ENV"
+            gh run cancel
           fi
 
       - name: Checkout code
