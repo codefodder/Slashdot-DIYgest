@@ -10,26 +10,17 @@ jobs:
   Slashdot-DIYgest:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: "Quit when email already sent"
+      - name: "Run unless email already sent"
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: codefodder/Slashdot-DIYgest
         run: |
-         SUCCESS_TODAY=$(gh run list \
-                         --created $(TZ=Asia/Bangkok date +%Y-%m-%d) \
-                         -s success \
-                         --json "status,startedAt" \
-                         --workflow slashdot-diygest-email.yml \
-                         -t '{{range .}}{{tablerow .startedAt .status}}{{end}}' | wc -l)
-
-         if [[ $SUCCESS_TODAY > 0 ]]; then
-           echo "## Email already sent today, skip workflow" >> "$GITHUB_STEP_SUMMARY"
-         else
-           echo "## Email not sent today, continue workflow" >> "$GITHUB_STEP_SUMMARY"
+         [[ "no runs today" == $(gh run list -L 1 -s success --created $(date +%Y%m%d)) ]] && \
+         # then:
            echo "RUN=true" >> "$GITHUB_ENV"
-         fi
+
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Cache Go deps
         if: ${{ env.RUN }}
