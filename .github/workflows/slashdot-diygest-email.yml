@@ -24,15 +24,20 @@ jobs:
           # if we don't have a success today, run.
           if [[ ! "$(< output)" =~ "success" ]]; then             
             echo "RUN=true" >> "$GITHUB_ENV"
-          else  
-            run_id=$(gh run list \
-                        --created $TODAY \
-                        --json "databaseId" \
-                        -L1 \
-                         -s in_progress \
-                         --template '{{range.}} {{tablerow .databaseId}} {{end}}')
+          else
+            # wait a moment and cancel
+            sleep 3
+            gh run list \
+               --created $TODAY \
+               --json "databaseId" \
+               -L1 \
+                -s in_progress \
+                --template '{{range.}} {{tablerow .databaseId}} {{end}}' | tee run_id.txt
+                
+            run_id=$(< run_id.txt)
             
-            echo "### Run cancelling self id: $run_id" | tee >> "GITHUB_STEP_SUMMARY"
+            echo "### Run cancelling self id: $run_id" >> "GITHUB_STEP_SUMMARY"
+            
             gh run cancel $run_id
           fi
 
