@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Has Slashdot-DIYgest been sent today?"
-        run: bin/check_already_sent.sh
+        run: |
+          bin/check_already_sent.sh
 
       - name: Checkout code
         if: ${{ env.RUN }}
