@@ -14,18 +14,23 @@ jobs:
         run: |
           export GH_TOKEN='${{ github.token }}'
           export GH_REPO='codefodder/slashdot-diygest'
-          
+          export TODAY=$(date +%Y-%m-%d)
           gh run list \
-            --created $(date +%Y-%m-%d) \
-            --json "startedAt,conclusion" \
+            --created $TODAY \
+            --json "startedAt,databaseId,status,conclusion" \
             --workflow slashdot-diygest-email.yml \
-            --template '{{range .}}{{tablerow .startedAt .conclusion}}{{end}}' | tee output
+            --template '{{range .}}{{tablerow .startedAt .databaseId .status .conclusion}}{{end}}' | tee output
 
           # if we don't have a success today, run.
           if [[ ! "$(< output)" =~ "success" ]]; then             
             echo "RUN=true" >> "$GITHUB_ENV"
           else  
-            gh run cancel
+            gh run cancel $(gh run list \
+                                --created $TODAY \
+                                --json "databaseId" \
+                                -L1 \
+                                -s in_progress \
+                                --template '{{range.}} {{tablerow .databaseId}} {{end}}')
           fi
 
       - name: Checkout code
