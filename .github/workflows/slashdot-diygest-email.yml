@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: "Has Slashdot-DIYgest been sent today?"
         run: |
+          find .
           bin/check_already_sent.sh
 
       - name: Checkout code
