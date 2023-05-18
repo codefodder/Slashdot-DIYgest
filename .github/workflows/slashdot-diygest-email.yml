@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: "Run when the email hasn't been sent today"
         run: |
-          GH_TOKEN='${{ github.token }}'
-          GH_REPO='codefodder/slashdot-diygest'
+          export GH_TOKEN='${{ github.token }}'
+          export GH_REPO='codefodder/slashdot-diygest'
           
           gh run list \
             --created $(date +%Y-%m-%d) \
