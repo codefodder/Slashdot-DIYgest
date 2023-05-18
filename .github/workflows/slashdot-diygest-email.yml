@@ -36,7 +36,8 @@ jobs:
                 
             run_id=$(< run_id.txt)
             
-            echo "### Run cancelling self id: $run_id" >> "GITHUB_STEP_SUMMARY"
+            echo "### Run cancelling self id: $run_id" | tee summary
+            cat summary >> "GITHUB_STEP_SUMMARY"
             
             gh run cancel $run_id
           fi
