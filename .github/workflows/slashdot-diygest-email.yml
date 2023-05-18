@@ -15,9 +15,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: codefodder/Slashdot-DIYgest
         run: |
-         [[ "no runs today" == $(gh run list -L 1 -s success --created $(date +%Y%m%d)) ]] && \
-         # then:
-           echo "RUN=true" >> "$GITHUB_ENV"
+         [[ "$(gh run list -L 1 -s success --created $(date +%Y%m%d))" == "" ]] && echo "RUN=true" >> "$GITHUB_ENV"
 
       - name: Checkout code
         uses: actions/checkout@v3
