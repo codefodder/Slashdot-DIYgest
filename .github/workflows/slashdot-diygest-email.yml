@@ -24,6 +24,7 @@ jobs:
           # if we don't have a success today, run.
           if [[ ! "$(< output)" =~ "success" ]]; then             
             echo "RUN=true" >> "$GITHUB_ENV"
+          else  
             gh run cancel
           fi
 
