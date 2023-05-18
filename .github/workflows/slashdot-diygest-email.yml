@@ -26,32 +26,32 @@ jobs:
 
          if [[ $SUCCESS_TODAY > 0 ]]; then
            echo "## Email already sent today, skip workflow" >> "$GITHUB_STEP_SUMMARY"
-           echo "CANCEL_RUN=true" >> "$GITHUB_ENV"
          else
            echo "## Email not sent today, continue workflow" >> "$GITHUB_STEP_SUMMARY"
+           echo "RUN=true" >> "$GITHUB_ENV"
          fi
 
       - name: Cache Go deps
-        if: ${{ ! env.CANCEL_RUN  == 'true' }}
+        if: ${{ env.RUN }}
         uses: gacts/setup-go-with-cache@v1
         with:
           go-version: 1.19
 
       - name: Install Golang deps
-        if: ${{ ! env.CANCEL_RUN  == 'true' }}
+        if: ${{ env.RUN }}
         run: |
           go install github.com/cbroglie/mustache/cmd/mustache@latest
           go install github.com/ericchiang/pup@latest
 
       - name: Scrape
-        if: ${{ ! env.CANCEL_RUN  == 'true' }}
+        if: ${{ env.RUN }}
         run: |
           bin/slashdot_scrape.sh
           echo "HTMLFILE=$(ls *html)" >> "$GITHUB_ENV"
           echo "JSONFILE=$(ls *json)" >> "$GITHUB_ENV"
 
       - name: Email Slashdot DIYgest
-        if: ${{ ! env.CANCEL_RUN  == 'true' }}
+        if: ${{ env.RUN }}
         id: sending_email
         uses: dawidd6/action-send-mail@v3
         with:
