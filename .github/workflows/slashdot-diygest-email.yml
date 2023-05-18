@@ -10,6 +10,7 @@ jobs:
   Slashdot-DIYgest:
     runs-on: ubuntu-latest
     steps:
+      - uses: technote-space/workflow-conclusion-action@v3
       - name: "Run when the email hasn't been sent today"
         run: |
           GH_TOKEN='${{ github.token }}' \
@@ -24,6 +25,8 @@ jobs:
           # if we don't have a success today, run.
           if [[ ! "$(< output)" =~ "success" ]]; then
             echo "RUN=true" >> "$GITHUB_ENV"
+          else
+            echo "WORKFLOW_CONCLUSION='skipped'" >> "$GITHUB_ENV"
           fi
 
       - name: Checkout code
