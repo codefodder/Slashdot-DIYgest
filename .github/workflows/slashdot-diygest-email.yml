@@ -10,30 +10,8 @@ jobs:
   Slashdot-DIYgest:
     runs-on: ubuntu-latest
     steps:
-      - name: "Run when the email hasn't been sent today"
-        run: |
-          export GH_TOKEN='${{ github.token }}'
-          export GH_REPO='codefodder/slashdot-diygest'
-          export TODAY=$(date +%Y-%m-%d)
-          gh run list \
-            --created $TODAY \
-            --json "startedAt,databaseId,status,conclusion" \
-            --workflow slashdot-diygest-email.yml \
-            --template '{{range .}}{{tablerow .startedAt .databaseId .status .conclusion}}{{end}}' | tee output
-
-          # if we don't have a success today, run.
-          if [[ ! "$(< output)" =~ "success" ]]; then             
-            echo "RUN=true" >> "$GITHUB_ENV"
-          else
-            # wait a moment and cancel
-            sleep 3
-            grep 'in_progress' < output | awk '{print $2}' | tee run_id.txt            
-            run_id=$(< run_id.txt)
-            echo "### Run cancelling self id: $run_id" | tee summary
-            cat summary >> "GITHUB_STEP_SUMMARY"
-            
-            gh run cancel $run_id
-          fi
+      - name: "Has Slashdot-DIYgest been sent today?"
+        run: bin/check_already_sent
 
       - name: Checkout code
         if: ${{ env.RUN }}
