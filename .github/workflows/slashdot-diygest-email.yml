@@ -27,15 +27,8 @@ jobs:
           else
             # wait a moment and cancel
             sleep 3
-            gh run list \
-               --created $TODAY \
-               --json "databaseId" \
-               -L1 \
-                -s in_progress \
-                --template '{{range.}} {{tablerow .databaseId}} {{end}}' | tee run_id.txt
-                
+            grep 'in_progress' < output | awk '{print $2}' | tee run_id.txt            
             run_id=$(< run_id.txt)
-            
             echo "### Run cancelling self id: $run_id" | tee summary
             cat summary >> "GITHUB_STEP_SUMMARY"
             
