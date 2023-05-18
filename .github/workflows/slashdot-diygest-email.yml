@@ -10,18 +10,19 @@ jobs:
   Slashdot-DIYgest:
     runs-on: ubuntu-latest
     steps:
-      - name: "Run unless email already sent"
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: codefodder/Slashdot-DIYgest
+      - name: "Run when the email hasn't been sent today"
         run: |
-          GH_REPO=codefodder/slashdot-diygest gh run list \
+          GH_TOKEN='${{ github.token }}' \
+          GH_REPO=codefodder/slashdot-diygest \
+          \
+          gh run list \
             --created $(date +%Y-%m-%d) \
-            --json "startedAt,status,conclusion" \
+            --json "startedAt,conclusion" \
             --workflow slashdot-diygest-email.yml \
-            --template '{{range .}}{{tablerow .startedAt .status .conclusion}}{{end}}' | tee output
+            --template '{{range .}}{{tablerow .startedAt .conclusion}}{{end}}' | tee output
 
-          if [[ "$(< output)" =~ "success" ]]; then
+          # if we don't have a success today, run.
+          if [[ ! "$(< output)" =~ "success" ]]; then
             echo "RUN=true" >> "$GITHUB_ENV"
           fi
 
