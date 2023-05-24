@@ -8,6 +8,6 @@ Send them as  an HTML email to myself. It's a simpler version of [codefodder/Hac
 
 Gihub Fork and settings > secrets
 
-    to: ${{secrets.GMAIL_USER}}
+    to: ${{secrets.EMAIL_RECIPIENT}}
     username: ${{secrets.GMAIL_USER}}
     password: ${{secrets.GM_APPWRD}}
