@@ -69,7 +69,7 @@ jobs:
         with:
           subject: Slashdot DIYGest
           from: Slashdot DIYgest
-          to: ${{secrets.GMAIL_USER}}
+          to: ${{secrets.EMAIL_RECIPIENT}}
           username: ${{secrets.GMAIL_USER}}
           password: ${{secrets.GM_APPWRD}}
           html_body: file://${{ env.HTMLFILE }}
